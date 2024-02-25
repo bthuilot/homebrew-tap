@@ -1,18 +1,18 @@
 class Dockerleaks < Formula
   desc "dockerleaks"
   homepage "https://github.com/bthuilot/dockerleaks"
-  version "1.1.0"
+  version "1.3.0"
   license "GPL-3"
 
  
   if OS.mac? && Hardware::CPU.intel?
     url "https://github.com/bthuilot/dockerleaks/releases/download/v#{version}/dockerleaks-v#{version}-darwin-amd64.tar.gz"
-    sha256 "f2bdf746c4e402d398b437bae47b941ccf66582da534e5eaac5baaa5e637d763"
+    sha256 "732acecb0460f91e2fd41fdc3337c96221a97f6da32207e9360b7b9f9d37f41f"
   end
 
   if OS.mac? && Hardware::CPU.arm?
     url "https://github.com/bthuilot/dockerleaks/releases/download/v#{version}/dockerleaks-v#{version}-darwin-arm64.tar.gz"
-    sha256 "e774d1f2eb0e35f61928890976d9ec70a7446a959c0e221ca8e0b24ef7a3a5de"
+    sha256 "57db6f01e680f508f883d477d894f6b0cd7aa0cee119b7b76a795ca0424dd5c0"
   end
 
   def install
