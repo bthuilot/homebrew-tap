@@ -18,14 +18,14 @@ ALL_HOOKS = %w[
 ].freeze
 
 class Ggh < Formula
-  VERSION = '0.1.2'
+  VERSION = '0.2.0'
 
   desc 'Personalized, global git hooks'
   homepage 'https://github.com/bthuilot/ggh'
   version VERSION
   license 'GPL-3.0-or-later'
   url "https://github.com/bthuilot/ggh/archive/refs/tags/v#{VERSION}.tar.gz"
-  sha256 'a83f79c4c4068efe35e1b1dcc73156182f8aaf021a41f0cfc03d54145b80070b'
+  sha256 'e468b5667acc5797521a679b59a1b9e3b00dd5ef51d5e2a1f54ff8f573b3097b'
 
   depends_on 'opam' => :build
   depends_on 'git'
