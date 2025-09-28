@@ -3,10 +3,10 @@
 class GitLostAndFound < Formula
   desc 'Script to find dangling commits in git repositories'
   homepage 'https://github.com/bthuilot/git-lost-and-found'
-  version '2.0.1'
+  version '2.2.0'
   license 'GPL-3.0-or-later'
   url "https://github.com/bthuilot/git-scanner/archive/refs/tags/v#{version}.tar.gz"
-  sha256 '09c4410903bc531226ae868df78a4ec2f3d3910ff8ef59515e17cbc3062e203c'
+  sha256 '56407e645c521eb188cf7401cd90d76da63b7f98490b1a54412d61d4a6b2bc34'
   head 'https://github.com/bthuilot/git-lost-and-found.git', branch: 'main'
 
   depends_on 'go' => :build
