@@ -1,0 +1,40 @@
+name: brew bottle
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-bot:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: set up homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@0da5e123f3a792967ae460199673d87e2bfa257d # master
+
+      - name: Cache Homebrew Bundler RubyGems
+        uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ matrix.os }}-rubygems-
+
+      - run: brew test-bot --only-cleanup-before
+
+      - run: brew test-bot --only-setup
+
+      - run: brew test-bot --only-tap-syntax
+
+      - run: brew test-bot --only-formulae
+        if: github.event_name == 'pull_request'
+
+      - name: Upload bottles as artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: bottles_${{ matrix.os }}
+          path: '*.bottle.*'
