@@ -18,18 +18,17 @@ ALL_HOOKS = %w[
 ].freeze
 
 class Ggh < Formula
-  VERSION = '0.2.2'
+  VERSION = "0.2.2"
 
-  desc 'Personalized, global git hooks'
-  homepage 'https://github.com/bthuilot/ggh'
-  version VERSION
-  license 'GPL-3.0-or-later'
+  desc "Personalized, global git hooks"
+  homepage "https://github.com/bthuilot/ggh"
   url "https://github.com/bthuilot/ggh/archive/refs/tags/v#{VERSION}.tar.gz"
-  sha256 'ab3dea8c0327497c66179cb9593fa8ccb1773528de05a32bab5e3dd803b308d6'
+  sha256 "ab3dea8c0327497c66179cb9593fa8ccb1773528de05a32bab5e3dd803b308d6"
+  license "GPL-3.0-or-later"
 
-  depends_on 'opam' => :build
-  depends_on 'make' => :build
-  depends_on 'git'
+  depends_on "make" => :build
+  depends_on "opam" => :build
+  depends_on "git"
 
   # TODO(byce): support bottles
   # bottle do
@@ -42,28 +41,28 @@ class Ggh < Formula
   # end
 
   def install
-    opamroot = buildpath / '.opam'
+    opamroot = buildpath / ".opam"
 
-    ENV['OPAMROOT'] = opamroot
-    ENV['OPAMYES'] = '1'
+    ENV["OPAMROOT"] = opamroot
+    ENV["OPAMYES"] = "1"
 
-    system 'opam', 'init', '--no-setup', '--disable-sandboxing', '--bare'
-    system 'opam', 'switch', 'create', '.', '--no-install'
-    system 'opam', 'install', '.', '--deps-only', '-y'
-    system 'opam', 'exec', '--', 'dune', 'build', '--release', '--sandbox=none'
+    system "opam", "init", "--no-setup", "--disable-sandboxing", "--bare"
+    system "opam", "switch", "create", ".", "--no-install"
+    system "opam", "install", ".", "--deps-only", "-y"
+    system "opam", "exec", "--", "dune", "build", "--release", "--sandbox=none"
 
-    bin.install buildpath / '_build/default/bin/main.exe' => 'ggh'
+    bin.install buildpath / "_build/default/bin/main.exe" => "ggh"
 
-    hookspath = pkgshare / 'hooks'
+    hookspath = pkgshare / "hooks"
     hookspath.mkpath
 
     ALL_HOOKS.each do |hook|
-      hookspath.install_symlink bin / 'ggh' => hook
+      hookspath.install_symlink bin / "ggh" => hook
     end
   end
 
   def caveats
-    hookspath = pkgshare / 'hooks'
+    hookspath = pkgshare / "hooks"
     <<~CAVEATS
 
       #########################
@@ -79,6 +78,6 @@ class Ggh < Formula
   end
 
   test do
-    system "#{bin}/ggh --help"
+    system "#{bin}/ggh", "--help"
   end
 end
