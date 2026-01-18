@@ -18,16 +18,17 @@ ALL_HOOKS = %w[
 ].freeze
 
 class Ggh < Formula
-  VERSION = '0.2.0'
+  VERSION = '0.2.2'
 
   desc 'Personalized, global git hooks'
   homepage 'https://github.com/bthuilot/ggh'
   version VERSION
   license 'GPL-3.0-or-later'
   url "https://github.com/bthuilot/ggh/archive/refs/tags/v#{VERSION}.tar.gz"
-  sha256 'e468b5667acc5797521a679b59a1b9e3b00dd5ef51d5e2a1f54ff8f573b3097b'
+  sha256 'ab3dea8c0327497c66179cb9593fa8ccb1773528de05a32bab5e3dd803b308d6'
 
   depends_on 'opam' => :build
+  depends_on 'make' => :build
   depends_on 'git'
 
   # TODO(byce): support bottles
@@ -46,27 +47,34 @@ class Ggh < Formula
     ENV['OPAMROOT'] = opamroot
     ENV['OPAMYES'] = '1'
 
-    system 'opam', 'init', '--no-setup', '--disable-sandboxing'
-    system 'opam', 'update'
-    system 'opam', 'exec', '--', 'opam', 'install', '.', '--deps-only', '-y'
-    system 'opam', 'exec', '--', 'dune', 'build'
+    system 'opam', 'init', '--no-setup', '--disable-sandboxing', '--bare'
+    system 'opam', 'switch', 'create', '.', '--no-install'
+    system 'opam', 'install', '.', '--deps-only', '-y'
+    system 'opam', 'exec', '--', 'dune', 'build', '--release', '--sandbox=none'
 
-    bin.install buildpath / '_build/default/bin/ggh/main.exe' => 'ggh'
+    bin.install buildpath / '_build/default/bin/main.exe' => 'ggh'
+
+    hookspath = pkgshare / 'hooks'
+    hookspath.mkpath
 
     ALL_HOOKS.each do |hook|
-      bin.install_symlink bin / 'ggh' => "hooks/#{hook}"
+      hookspath.install_symlink bin / 'ggh' => hook
     end
   end
 
-  def post_install
-    system 'opam', 'exec', '--', 'dune', 'clean'
-  end
-
   def caveats
-    hooks_dir = bin / 'hooks'
+    hookspath = pkgshare / 'hooks'
     <<~CAVEATS
-      WARNING: ggh is not currently configured,
-      please run `GGH_HOOKS_DIR=#{hooks_dir} ggh configure` to set ggh as your global hooks
+
+      #########################
+      # GGH IS NOT CONFIGURED #
+      #########################
+
+      WARNING: ggh is not currently configured to run as git hooks
+      please run the following to set ggh as your global hooks
+
+      $ git config set --global core.hooksPath "#{hookspath}"
+
     CAVEATS
   end
 
