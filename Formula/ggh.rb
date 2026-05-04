@@ -18,12 +18,12 @@ ALL_HOOKS = %w[
 ].freeze
 
 class Ggh < Formula
-  VERSION = "0.2.2"
+  VERSION = "0.3.0"
 
-  desc "Personalized, global git hooks"
+  desc "Personalized global git hooks"
   homepage "https://github.com/bthuilot/ggh"
   url "https://github.com/bthuilot/ggh/archive/refs/tags/v#{VERSION}.tar.gz"
-  sha256 "ab3dea8c0327497c66179cb9593fa8ccb1773528de05a32bab5e3dd803b308d6"
+  sha256 "ea23c4c7271c08b05f7076b44af8c22b6e27d112672ec84fa21b03b4ed4015d2"
   license "GPL-3.0-or-later"
 
   depends_on "make" => :build
@@ -42,14 +42,12 @@ class Ggh < Formula
 
   def install
     opamroot = buildpath / ".opam"
-
-    ENV["OPAMROOT"] = opamroot
+    opamroot.mkpath
     ENV["OPAMYES"] = "1"
+    ENV["OPAMROOT"] = opamroot
 
-    system "opam", "init", "--no-setup", "--disable-sandboxing", "--bare"
-    system "opam", "switch", "create", ".", "--no-install"
-    system "opam", "install", ".", "--deps-only", "-y"
-    system "opam", "exec", "--", "dune", "build", "--release", "--sandbox=none"
+    system "opam", "init", "--no-setup", "--disable-sandboxing", "--bare", "--"
+    system "make", "build", "BUILDARGS=--release", "OPAMARGS="
 
     bin.install buildpath / "_build/default/bin/main.exe" => "ggh"
 
@@ -73,6 +71,11 @@ class Ggh < Formula
       please run the following to set ggh as your global hooks
 
       $ git config set --global core.hooksPath "#{hookspath}"
+
+      or edit your ~/.gitconfig to contain the following:
+
+      [core]
+          hooksPath = #{hookspath}
 
     CAVEATS
   end
